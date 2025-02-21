@@ -47,10 +47,7 @@ def handle_message(event):
 2. どこを改善すればいい？"
     elif "記録一覧" in user_message:
         records = sheet.get_all_values()
-        record_text = "
-record_text = "\n".join([",".join(row) for row in records[-5:]])
-        reply = f"最近の記録:
-{record_text}"
+record_text = "\n".join([",".join(row) for row in records[-5:]])reply = f"最近の記録:{record_text}"
     else:
         reply = "行動を記録できます！
 
