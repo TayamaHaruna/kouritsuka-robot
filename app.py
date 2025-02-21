@@ -45,11 +45,12 @@ def handle_message(event):
 1. どの行動が効果的だった?
 2. どこを改善すればいい?
 elif "記録一覧" in user_message:
-records = sheet.get_all_values()
-record_text = "\n".join([",".join(row) for row in records[-5:]])
-reply = f"最近の記録:{record_text}"
-    else:
-reply = "行動を記録できます
+　　　　records = sheet.get_all_values()
+　　　　record_text = "\n".join([",".join(row) for row in records[-5:]])
+if record_text:
+　　　　reply = f"最近の記録:\n{str(record_text)}"
+else:
+    reply = "行動を記録できます"
         例: 今日のアポ数 5
 記録一覧 と入力すると、直近のデータを表示できます。"
 
