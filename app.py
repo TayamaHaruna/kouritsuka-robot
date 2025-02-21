@@ -52,7 +52,7 @@ elif "記録一覧" in user_message:
     else:
         reply = "行動を記録できます"
         例: 今日のアポ数 5
-記録一覧 と入力すると、直近のデータを表示できます。"
+        記録一覧 と入力すると、直近のデータを表示できます。"
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
