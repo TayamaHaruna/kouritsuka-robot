@@ -36,7 +36,8 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, s
 
 # Googleスプレッドシートに接続
 client = gspread.authorize(creds)
-sheet = client.open("LINE_BOT_GOAL_TRACKER").sheet1
+spreadsheet_id = "1NhIrPEWzxRBowoFVzqU8BpcJ3pORy94AMsoKac2FH_s"  # GoogleスプレッドシートのID
+sheet = client.open_by_key(spreadsheet_id).sheet1
 
 @app.route("/callback", methods=['POST'])
 def callback():
