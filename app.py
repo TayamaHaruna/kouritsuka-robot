@@ -37,18 +37,18 @@ def handle_message(event):
         try:
             appt_count = int(user_message.split()[-1])
             sheet.append_row([user_id, "アポ", appt_count])
-            reply = f"{appt_count}件のアポを記録しました！"
+            reply = f"{appt_count}件のアポを記録しました!"
         except ValueError:
             reply = "入力形式が正しくありません。例: 今日のアポ数 5"
     elif "成果" in user_message:
-        reply ="今週の成果を振り返りましょう！"
-1. どの行動が効果的だった？
-2. どこを改善すればいい？
+        reply ="今週の成果を振り返りましょう!"
+1. どの行動が効果的だった?
+2. どこを改善すればいい?
     elif "記録一覧" in user_message:
         records = sheet.get_all_values()
 record_text = "\n".join([",".join(row) for row in records[-5:]])reply = f"最近の記録:{record_text}"
     else:
-        reply = "行動を記録できます！
+        reply = "行動を記録できます
 
 例: 今日のアポ数 5
 記録一覧 と入力すると、直近のデータを表示できます。"
