@@ -40,10 +40,9 @@ def handle_message(event):
             reply = f"{appt_count}件のアポを記録しました!"
         except ValueError:
             reply = "入力形式が正しくありません。例: 今日のアポ数 5"
+
     elif "成果" in user_message:
-        reply ="今週の成果を振り返りましょう!"
-# 1. どの行動が効果的だった?
-# 2. どこを改善すればいい?
+    reply = "今週の成果を振り返りましょう！"
 
 elif "記録一覧" in user_message:
     records = sheet.get_all_values()
@@ -52,12 +51,13 @@ elif "記録一覧" in user_message:
     if record_text:
         reply = f"最近の記録:\n{record_text}"
     else:
-        reply = "行動を記録できます"
+        reply = "行動を記録できます！"
 
-    # 例: 今日のアポ数 5
-    # 記録一覧 と入力すると、直近のデータを表示できます。
+# 例としての出力内容
+reply += "\n\n例：今日のアポ数 5\n記録一覧 と入力すると、直近のデータを表示できます。"
 
 line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
 if __name__ == "__main__":
     app.run(debug=True)
+
