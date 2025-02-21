@@ -41,7 +41,7 @@ def handle_message(event):
         except ValueError:
             reply = "入力形式が正しくありません。例: 今日のアポ数 5"
     elif "成果" in user_message:
-        reply = 今週の成果を振り返りましょう！
+        reply ="今週の成果を振り返りましょう！"
 
 1. どの行動が効果的だった？
 2. どこを改善すればいい？"
