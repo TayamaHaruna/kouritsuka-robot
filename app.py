@@ -23,9 +23,18 @@ line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 # Googleスプレッドシートの設定
+import json
+import os
+from oauth2client.service_account import ServiceAccountCredentials
+
+# Google API のスコープ
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-cred_path = "path/to/your/service_account.json"
-creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
+
+# 環境変数から認証情報を取得（修正ポイント）
+service_account_info = json.loads(os.environ["GOOGLE_CREDENTIALS_JSON"])
+creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
+
+# Googleスプレッドシートに接続
 client = gspread.authorize(creds)
 sheet = client.open("LINE_BOT_GOAL_TRACKER").sheet1
 
