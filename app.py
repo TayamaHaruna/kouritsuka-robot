@@ -45,14 +45,15 @@ def handle_message(event):
 1. どの行動が効果的だった?
 2. どこを改善すればいい?
 elif "記録一覧" in user_message:
-    records = sheet.get_all_values()  # ← もう一度入力し直す
-    record_text = "\n".join([",".join(row) for row in records[-5:]])  # ← 不要な文字がないか確認
+    records = sheet.get_all_values()
+record_text = "\n".join([",".join(row) for row in records[-5:]])
     if record_text:
-        reply = f"最近の記録:\n{record_text}"  # ← str() は不要
+        reply = f"最近の記録:\n{record_text}"
     else:
         reply = "行動を記録できます"
         例: 今日のアポ数 5
-        記録一覧 と入力すると、直近のデータを表示できます。"
+        reply = "記録一覧" と入力すると、"直近のデータ"を表示できます"
+        
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
 if __name__ == "__main__":
