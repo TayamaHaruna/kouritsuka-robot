@@ -4,6 +4,14 @@ from oauth2client.service_account import ServiceAccountCredentials
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import os
+# 環境変数が取得できているか確認
+json_data = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+
+if json_data:
+    print("✅ 環境変数が正常に取得できています")
+    print("環境変数の中身（100文字まで表示）:", json_data[:100])  # JSONの一部だけ表示
+else:
+    print("❌ 環境変数が取得できていません！")
 
 app = Flask(__name__)
 
