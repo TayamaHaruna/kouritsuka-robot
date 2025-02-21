@@ -42,9 +42,8 @@ def handle_message(event):
             reply = "入力形式が正しくありません。例: 今日のアポ数 5"
     elif "成果" in user_message:
         reply ="今週の成果を振り返りましょう！"
-
 1. どの行動が効果的だった？
-2. どこを改善すればいい？"
+2. どこを改善すればいい？
     elif "記録一覧" in user_message:
         records = sheet.get_all_values()
 record_text = "\n".join([",".join(row) for row in records[-5:]])reply = f"最近の記録:{record_text}"
