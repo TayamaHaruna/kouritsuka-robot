@@ -52,7 +52,7 @@ record_text = "\n".join([",".join(row) for row in records[-5:]])
     else:
         reply = "行動を記録できます"
         例: 今日のアポ数 5
-        reply = "記録一覧" と入力すると、"直近のデータ"を表示できます"
+        reply = "記録一覧" と入力すると"直近のデータ"を表示できます"
         
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
