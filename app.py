@@ -54,7 +54,7 @@ elif "記録一覧" in user_message:
         reply = "行動を記録できます！"
 
 # 例としての出力内容
-reply += "\n\n例：今日のアポ数 5\n記録一覧 と入力すると、直近のデータを表示できます。"
+reply += "\n\n例: 今日のアポ数 5\n記録一覧 と入力すると、直近のデータを表示できます。"
 
 line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
