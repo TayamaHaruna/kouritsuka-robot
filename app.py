@@ -19,10 +19,16 @@ app = Flask(__name__)
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    data = request.get_json()  
-    print("受信データ:", data)  
+    signature = request.headers.get("X-Line-Signature")
+    body = request.get_data(as_text=True)
 
-    return "Webhook received!", 200 
+    try:
+        handler.handle(body, signature)
+    except Exception as e:
+        print(f"エラー: {str(e)}")
+    
+    return "OK", 200
+
 
 @app.route("/")
 def home():
@@ -51,13 +57,6 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, s
 client = gspread.authorize(creds)
 spreadsheet_id = "1NhIrPEWzxRBowoFVzqU8BpcJ3pORy94AMsoKac2FH_s"  # GoogleスプレッドシートのID
 sheet = client.open_by_key(spreadsheet_id).sheet1
-
-@app.route("/callback", methods=['POST'])
-def callback():
-    signature = request.headers['X-Line-Signature']
-    body = request.get_data(as_text=True)
-    handler.handle(body, signature)
-    return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
