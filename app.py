@@ -62,6 +62,8 @@ sheet = client.open_by_key(spreadsheet_id).sheet1
 def handle_message(event):
     user_message = event.message.text.lower()
     user_id = event.source.user_id
+        # ✅ デフォルトの返信を設定（どの条件にも当てはまらない場合のため）
+    reply = "⚠ メッセージの内容が認識されませんでした"
 
     if "今日のアポ数" in user_message:
         try:
@@ -73,19 +75,17 @@ def handle_message(event):
 
     elif "成果" in user_message:
         reply = "今週の成果を振り返りましょう！"
-
+    
     elif "記録一覧" in user_message:
         records = sheet.get_all_values()
+    if records:  # 🔹 records にデータがあるか確認
         record_text = "\n".join([",".join(row) for row in records[-5:]])
-        
-        if record_text:
-            reply = f"最近の記録:\n{record_text}"
-        else:
-            reply = "行動を記録できます！"
+        reply = f"📜 最近の記録:\n{record_text}"
+    else:
+        reply = "📝 まだ記録がありません。行動を記録しましょう！"
 
-    # 例としての出力内容
-    reply += "\n\n例: 今日のアポ数 5\n記録一覧 と入力すると、直近のデータを表示できます。"
 
+    # ✅ どのif文にも当てはまらなくても `reply` にはデフォルト値があるのでエラーにならない
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
 if __name__ == "__main__":
