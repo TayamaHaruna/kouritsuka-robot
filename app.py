@@ -77,7 +77,7 @@ def handle_message(event):
         reply = "今週の成果を振り返りましょう！"
     
     elif "記録一覧" in user_message:
-    　　try:
+        try:
         records = sheet.get_all_values()  # スプレッドシートからデータ取得
     　　except Exception as e:
         print(f"エラー: {str(e)}")  # エラー内容をログに出力
