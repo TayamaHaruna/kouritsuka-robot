@@ -13,7 +13,13 @@ if json_data:
 else:
     print("❌ 環境変数が取得できていません！")
 
+from flask import Flask
+
 app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "🚀 アプリは動作中！"
 
 # 環境変数からLINE Botの設定を取得
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
