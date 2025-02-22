@@ -16,6 +16,9 @@ else:
 from flask import Flask
 
 app = Flask(__name__)
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    return "Webhook is working!", 200
 
 @app.route("/")
 def home():
