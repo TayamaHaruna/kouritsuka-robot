@@ -76,12 +76,13 @@ def handle_message(event):
     elif "成果" in user_message:
         reply = "今週の成果を振り返りましょう！"
     
-   elif "記録一覧" in user_message:
-    try:
+    elif "記録一覧" in user_message:
+    　　try:
         records = sheet.get_all_values()  # スプレッドシートからデータ取得
-    except Exception as e:
+    　　except Exception as e:
         print(f"エラー: {str(e)}")  # エラー内容をログに出力
         records = []  # エラー時は空リストを代入
+
 
     if records:  # recordsにデータがあれば
         record_text = "\n".join([",".join(row) for row in records[-5:]])  # 直近5件のデータ
