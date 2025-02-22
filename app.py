@@ -13,12 +13,16 @@ if json_data:
 else:
     print("❌ 環境変数が取得できていません！")
 
-from flask import Flask
+from flask import Flask, request  
 
 app = Flask(__name__)
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    return "Webhook is working!", 200
+    data = request.get_json()  
+    print("受信データ:", data)  
+
+    return "Webhook received!", 200 
 
 @app.route("/")
 def home():
