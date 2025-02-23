@@ -85,15 +85,15 @@ def handle_message(event):
                 sheet.append_row([user_id, "アポ", appt_count])
                 reply = f"{appt_count}件のアポを記録しました！"
         except ValueError:
-    reply = "入力形式が正しくありません。例: 今日のアポ数 5"
+            reply = "入力形式が正しくありません。例: 今日のアポ数 5"
 
-if "成果" in user_message:
+    if "成果" in user_message:
     reply = "今週の成果を振り返りましょう！"
     
-elif "記録一覧" in user_message:
-    try:
-        records = sheet.get_all_values()  # スプレッドシートからデータ取得
-    except Exception as e:
+    elif "記録一覧" in user_message:
+        try:
+            records = sheet.get_all_values()  # スプレッドシートからデータ取得
+        except Exception as e:
         print(f"エラー: {str(e)}")  # エラー内容をログに出力
         records = []  # エラー時は空リストを代入
 
