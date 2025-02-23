@@ -93,17 +93,18 @@ def handle_message(event):
         reply = "入力形式が正しくありません。例: 今日のアポ数 5"
 if "成果" in user_message:
     reply = "今週の成果を振り返りましょう！"
-else:
-    if "記録一覧" in user_message:
-        try:
-            records = sheet.get_all_values()  # スプレッドシートからデータ取得
-        except Exception as e:
-            print(f"エラー: {str(e)}")  # エラー内容をログに出力
-            records = []  # エラー時は空リストを代入
+    
+elif "記録一覧" in user_message:
+    try:
+        records = sheet.get_all_values()  # スプレッドシートからデータ取得
+    except Exception as e:
+        print(f"エラー: {str(e)}")  # エラー内容をログに出力
+        records = []  # エラー時は空リストを代入
 
-    if records:  # recordsにデータがあれば
-        record_text = "\n".join([",".join(row) for row in records[-5:]])  # 直近5件のデータ
-        reply = f"📄 最近の記録:\n{record_text}"
+if records:  # recordsにデータがあれば
+        record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
+        reply = f"📋 最近の記録:\n{record_text}"
+
     else:
         reply = "📭 まだ記録がありません。行動を記録しましょう！"
 
