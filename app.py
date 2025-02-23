@@ -90,20 +90,24 @@ def handle_message(event):
             
     if "成果" in user_message:
         reply = "今週の成果を振り返りましょう！"
-    elif "記録一覧" in user_message:
-        try:
-            records = sheet.get_all_values()  # スプレッドシートからデータ取得
-            print(f"📂 取得データ: {records[:5]}")  # 確認用ログ
 
-        except Exception as e:
-            print(f"エラー: {str(e)}")  # エラー内容をログに出力
-            records = []  # エラー時は空リストを代入
-        
-        if records:
-            record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
-            reply = f"📋 最新の記録:\n{record_text}"
-        else:
-            reply = "📓 まだ記録がありません。行動を記録しましょう！"
+elif "記録一覧" in user_message:
+    try:
+        print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用ログ
+        records = sheet.get_all_values()  # スプレッドシートからデータ取得
+        print(f"📋 取得データ (最初の5件): {records[:5]}")  # 確認用ログ
+
+    except Exception as e:
+        print(f"❌ スプレッドシート取得エラー: {str(e)}")  # エラー詳細を出力
+        records = []  # エラー時は空リストを代入
+
+    if records:
+        print("✅ データが取得できました")  # 確認ログ
+        record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
+        reply = f"📋 最新の記録:\n{record_text}"
+    else:
+        print("⚠️ 取得データなし")  # 確認ログ
+        reply = "📋 まだ記録がありません。行動を記録しましょう！"
 
 def handle_message(event):
     reply_token = event.reply_token  # eventを関数の引数で受け取る
