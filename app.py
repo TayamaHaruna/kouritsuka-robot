@@ -65,8 +65,12 @@ def handle_message(event):
         # ✅ デフォルトの返信を設定（どの条件にも当てはまらない場合のため）
     reply = "⚠ メッセージの内容が認識されませんでした"
     import re  # 正規表現を使う
-    
-if "今日のアポ" in user_message:
+
+def handle_message(event):
+    user_message = event.message.text.lower()  # 🔹 ここで user_message を定義
+
+    if "今日のアポ" in user_message:
+
     try:
         # 半角・全角スペースを統一
         normalized_message = re.sub(r"\s+", " ", user_message)  # 連続したスペースを1つに統一
