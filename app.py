@@ -67,25 +67,19 @@ def handle_message(event):
     user_id = event.source.user_id
     print(f"👤 ユーザーID: {user_id}")  # デバッグ用
 
-    if "今日のアポ" in user_message:  # + ここはOK
-        try:
-            # 半角・全角スペース統一
-            normalized_message = re.sub(r"\s+", "", user_message)
-            normalized_message = zen_to_han(normalized_message)
+# ユーザーが送信したメッセージをそのまま記録する
+print(f"📩 受信メッセージ: {user_message}")  # デバッグ用
+user_id = event.source.user_id
+print(f"👤 ユーザーID: {user_id}")  # デバッグ用
 
-            # 「今日のアポ数 5」「今日のアポ 5件」などをサポート
-            match = re.search(r"(\d+|[一二三四五六七八九十])件?", normalized_message)
+try:
+    print("✅ スプレッドシートに記録します！")  # 確認ログ
+    sheet.append_row([user_id, user_message])  # そのまま記録
+    reply = f"📄 記録しました: {user_message}"
 
-            if match:  # if も try ブロック内に入れる
-                appt_count = match.group(1).rstrip("件")
-                appt_count = kanji_to_number(appt_count) if appt_count in "一二三四五六七八九十" else int(appt_count)
-
-                print("✅ スプレッドシートに記録します！")  # 確認ログ
-                sheet.append_row([user_id, "アポ", appt_count])
-                reply = f"{appt_count}件のアポを記録しました！"
-
-        except ValueError:
-            reply = "入力形式が正しくありません。例: 今日のアポ数 5"
+except Exception as e:
+    print(f"❌ 記録エラー: {str(e)}")  # エラー詳細を出力
+    reply = "⚠ スプレッドシートへの記録に失敗しました"
 
     elif "記録一覧" in user_message:
         try:
