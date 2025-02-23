@@ -82,6 +82,7 @@ def handle_message(event):
                 appt_count = match.group(1).rstrip("件")
                 appt_count = kanji_to_number(appt_count) if appt_count in "一二三四五六七八九十" else int(appt_count)
 
+                print("✅ スプレッドシートに記録します！")
                 sheet.append_row([user_id, "アポ", appt_count])
                 reply = f"{appt_count}件のアポを記録しました！"
         except ValueError:
@@ -92,6 +93,8 @@ def handle_message(event):
     elif "記録一覧" in user_message:
         try:
             records = sheet.get_all_values()  # スプレッドシートからデータ取得
+            print(f"📂 取得データ: {records[:5]}")  # 確認用ログ
+
         except Exception as e:
             print(f"エラー: {str(e)}")  # エラー内容をログに出力
             records = []  # エラー時は空リストを代入
