@@ -81,7 +81,8 @@ except Exception as e:
     print(f"❌ 記録エラー: {str(e)}")  # エラー詳細を出力
     reply = "⚠ スプレッドシートへの記録に失敗しました"
 
-    elif "記録一覧" in user_message:
+else:  # 👈 ここを追加してエラーを防ぐ
+    if "記録一覧" in user_message:
         try:
             print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用
             records = sheet.get_all_values()  # スプレッドシートからデータ取得
