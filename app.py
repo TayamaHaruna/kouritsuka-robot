@@ -61,56 +61,50 @@ sheet = client.open_by_key(spreadsheet_id).sheet1
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_message = event.message.text.lower()
+    print(f"📩 受信メッセージ: {user_message}")  # デバッグ用
     user_id = event.source.user_id
-        # ✅ デフォルトの返信を設定（どの条件にも当てはまらない場合のため）
-    reply = "⚠ メッセージの内容が認識されませんでした"
-    import re  # 正規表現を使う
+    print(f"👤 ユーザーID: {user_id}")  # デバッグ用
 
-def handle_message(event):
-    user_message = event.message.text.lower()
-
-    if "今日のアポ" in user_message:  # ← ここはOK
-        try:  # ← try ブロックを正しくインデント
+    if "今日のアポ" in user_message:  # + ここはOK
+        try:
             # 半角・全角スペース統一
-            normalized_message = re.sub(r"\s+", " ", user_message)
+            normalized_message = re.sub(r"\s+", "", user_message)
             normalized_message = zen_to_han(normalized_message)
 
-            # 「今日のアポ数 5」「今日のアポ 5件」 などをサポート
+            # 「今日のアポ数 5」「今日のアポ 5件」などをサポート
             match = re.search(r"(\d+|[一二三四五六七八九十])件?", normalized_message)
 
             if match:  # if も try ブロック内に入れる
                 appt_count = match.group(1).rstrip("件")
                 appt_count = kanji_to_number(appt_count) if appt_count in "一二三四五六七八九十" else int(appt_count)
 
-                print("✅ スプレッドシートに記録します！")
+                print("✅ スプレッドシートに記録します！")  # 確認ログ
                 sheet.append_row([user_id, "アポ", appt_count])
                 reply = f"{appt_count}件のアポを記録しました！"
+
         except ValueError:
             reply = "入力形式が正しくありません。例: 今日のアポ数 5"
-            
-    if "成果" in user_message:
-        reply = "今週の成果を振り返りましょう！"
-    
+
     elif "記録一覧" in user_message:
         try:
-            print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用ログ
+            print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用
             records = sheet.get_all_values()  # スプレッドシートからデータ取得
-            print(f"📋 取得データ (最初の5件): {records[:5]}")  # 確認用ログ
+            print(f"📄 取得データ（最初の5件）: {records[:5]}")  # 確認用ログ
+
         except Exception as e:
             print(f"❌ スプレッドシート取得エラー: {str(e)}")  # エラー詳細を出力
             records = []  # エラー時は空リストを代入
 
-    if records:
-        print("✅ データが取得できました")  # 確認ログ
-        record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
-        reply = f"📋 最新の記録:\n{record_text}"
+        if records:
+            print("✅ データが取得できました")  # 確認ログ
+            record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
+            reply = f"📄 最新の記録:\n{record_text}"
+        else:
+            print("⚠ 取得データなし")  # 確認ログ
+            reply = "📋 まだ記録がありません。行動を記録しましょう！"
+
     else:
-        print("⚠️ 取得データなし")  # 確認ログ
-        reply = "📋 まだ記録がありません。行動を記録しましょう！"
+        reply = "⚠ メッセージの内容が認識されませんでした"
 
-def handle_message(event):
-    reply_token = event.reply_token  # eventを関数の引数で受け取る
-    line_bot_api.reply_message(reply_token, TextSendMessage(text=reply))
-
-
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
