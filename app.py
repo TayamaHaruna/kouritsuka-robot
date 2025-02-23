@@ -86,7 +86,7 @@ def handle_message(event):
                 reply = f"{appt_count}件のアポを記録しました！"
         except ValueError:
             reply = "入力形式が正しくありません。例: 今日のアポ数 5"
-
+            
     if "成果" in user_message:
         reply = "今週の成果を振り返りましょう！"
     elif "記録一覧" in user_message:
@@ -102,6 +102,9 @@ def handle_message(event):
         else:
             reply = "📓 まだ記録がありません。行動を記録しましょう！"
 
-line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
+def handle_message(event):
+    reply_token = event.reply_token  # eventを関数の引数で受け取る
+    line_bot_api.reply_message(reply_token, TextSendMessage(text=reply))
+
 
 
