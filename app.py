@@ -96,10 +96,9 @@ def handle_message(event):
             print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用ログ
             records = sheet.get_all_values()  # スプレッドシートからデータ取得
             print(f"📋 取得データ (最初の5件): {records[:5]}")  # 確認用ログ
-
-    except Exception as e:
-        print(f"❌ スプレッドシート取得エラー: {str(e)}")  # エラー詳細を出力
-        records = []  # エラー時は空リストを代入
+        except Exception as e:
+            print(f"❌ スプレッドシート取得エラー: {str(e)}")  # エラー詳細を出力
+            records = []  # エラー時は空リストを代入
 
     if records:
         print("✅ データが取得できました")  # 確認ログ
