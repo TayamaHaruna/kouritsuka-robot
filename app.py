@@ -88,7 +88,7 @@ def handle_message(event):
             reply = "入力形式が正しくありません。例: 今日のアポ数 5"
 
     if "成果" in user_message:
-    reply = "今週の成果を振り返りましょう！"
+        reply = "今週の成果を振り返りましょう！"
     
     elif "記録一覧" in user_message:
         try:
