@@ -67,25 +67,24 @@ def handle_message(event):
     import re  # 正規表現を使う
 
 def handle_message(event):
-    user_message = event.message.text.lower()  # 🔹 ここで user_message を定義
-if "今日のアポ" in user_message:
+    user_message = event.message.text.lower()
 
-try:
-    # 半角・全角スペース統一
-    normalized_message = re.sub(r"\s+", " ", user_message)  # 連続したスペースを1つに統一
-    normalized_message = zen_to_han(normalized_message)  # 全角を半角に変換
+    if "今日のアポ" in user_message:  # ← ここはOK
+        try:  # ← try ブロックを正しくインデント
+            # 半角・全角スペース統一
+            normalized_message = re.sub(r"\s+", " ", user_message)
+            normalized_message = zen_to_han(normalized_message)
 
-    # 「今日のアポ数 5」「今日のアポ 5件」「今日のアポ 三」などをサポート
-    match = re.search(r"(\d+|[一二三四五六七八九十])件?", normalized_message)
+            # 「今日のアポ数 5」「今日のアポ 5件」 などをサポート
+            match = re.search(r"(\d+|[一二三四五六七八九十])件?", normalized_message)
 
-    if match:  # if を try ブロックの中に入れる
-        appt_count = match.group(1).rstrip("件")  # 「件」が含まれていても削除
-        appt_count = kanji_to_number(appt_count) if appt_count in "一二三四五六七八九十" else int(appt_count)
+            if match:  # if も try ブロック内に入れる
+                appt_count = match.group(1).rstrip("件")
+                appt_count = kanji_to_number(appt_count) if appt_count in "一二三四五六七八九十" else int(appt_count)
 
-        sheet.append_row([user_id, "アポ", appt_count])
-        reply = f"{appt_count}件のアポを記録しました！"
-
-except ValueError:
+                sheet.append_row([user_id, "アポ", appt_count])
+                reply = f"{appt_count}件のアポを記録しました！"
+        except ValueError:
     reply = "入力形式が正しくありません。例: 今日のアポ数 5"
 
 if "成果" in user_message:
