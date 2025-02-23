@@ -60,6 +60,8 @@ sheet = client.open_by_key(spreadsheet_id).sheet1
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    import re  # 正規表現を使う（この行を追加）
+    
     user_message = event.message.text.lower()
     print(f"📩 受信メッセージ: {user_message}")  # デバッグ用
     user_id = event.source.user_id
@@ -107,4 +109,5 @@ def handle_message(event):
         reply = "⚠ メッセージの内容が認識されませんでした"
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
+
 
