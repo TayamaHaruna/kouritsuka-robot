@@ -98,11 +98,10 @@ def handle_message(event):
             records = []  # エラー時は空リストを代入
 
 if records:  # recordsにデータがあれば
-        record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
-        reply = f"📋 最近の記録:\n{record_text}"
-
-    else:
-        reply = "📭 まだ記録がありません。行動を記録しましょう！"
+    record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
+    reply = f"📋 最近の記録:\n{record_text}"
+else:
+    reply = "📭 まだ記録がありません。行動を記録しましょう！"
 
     # ✅ どのif文にも当てはまらなくても `reply` にはデフォルト値があるのでエラーにならない
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
