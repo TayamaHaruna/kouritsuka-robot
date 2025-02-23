@@ -60,34 +60,34 @@ sheet = client.open_by_key(spreadsheet_id).sheet1
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    user_message = event.message.text  # 変換なしでそのまま記録する
+    user_message = event.message.text.lower()  # 受信メッセージ
     print(f"📩 受信メッセージ: {user_message}")  # デバッグ用
 
-    try:
-        print("✅ スプレッドシートに記録します！")  # 確認ログ
-        sheet.append_row([user_message])  # ユーザーIDなしで記録
-        reply = f"📋 記録しました: {user_message}"
+    # ✅ コマンド（「記録一覧」など）をスプレッドシートに記録しない
+    if user_message not in ["記録一覧", "最近の記録"]:  
+        try:
+            print("✅ スプレッドシートに記録します！")  # 確認ログ
+            sheet.append_row([user_message])  # メッセージ内容のみ記録
+            reply = f"📋 記録しました: {user_message}"
+        except Exception as e:
+            print(f"❌ 記録エラー: {str(e)}")  # エラー詳細を出力
+            reply = "⚠ スプレッドシートへの記録に失敗しました"
 
-    except Exception as e:
-        print(f"❌ 記録エラー: {str(e)}")  # エラー詳細を出力
-        reply = "⚠ スプレッドシートへの記録に失敗しました"
-
-    if "記録一覧" in user_message:
+    # ✅ 最新の記録を取得する処理
+    elif user_message in ["記録一覧", "最近の記録"]:  
         try:
             print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用
             records = sheet.get_all_values()  # スプレッドシートからデータ取得
-            print(f"📄 取得データ（最初の5件）: {records[:5]}")  # 確認用ログ
+            print(f"📄 取得データ（最新5件）: {records[-5:]}")  # 確認用ログ
+
+            if records:
+                record_text = "\n".join([row[0] for row in records[-5:] if row])  # 最新5件取得
+                reply = f"📄 最新の記録:\n{record_text}"
+            else:
+                reply = "📋 まだ記録がありません。行動を記録しましょう！"
 
         except Exception as e:
             print(f"❌ スプレッドシート取得エラー: {str(e)}")  # エラー詳細を出力
-            records = []  # エラー時は空リストを代入
-
-        if records:
-            print("✅ データが取得できました")  # 確認ログ
-            record_text = "\n".join([row[0] for row in records[-5:]])  # 最新5件のメッセージのみ取得
-            reply = f"📄 最新の記録:\n{record_text}"
-        else:
-            print("⚠ 取得データなし")  # 確認ログ
-            reply = "📋 まだ記録がありません。行動を記録しましょう！"
+            reply = "⚠ 記録の取得に失敗しました"
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
