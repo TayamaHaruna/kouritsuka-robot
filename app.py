@@ -64,14 +64,37 @@ def handle_message(event):
     user_id = event.source.user_id
         # ✅ デフォルトの返信を設定（どの条件にも当てはまらない場合のため）
     reply = "⚠ メッセージの内容が認識されませんでした"
+    import re  # 正規表現を使う
 
-    if "今日のアポ数" in user_message:
-        try:
-            appt_count = int(user_message.split()[-1])
+elif "今日のアポ" in user_message:
+    try:
+        # 半角・全角スペースを統一
+        normalized_message = re.sub(r"\s+", " ", user_message)  # 連続したスペースを1つに統一
+        normalized_message = zen_to_han(normalized_message)  # 全角を半角に変換
+
+        # 「今日のアポ数 5」「今日のアポ 5件」「今日のアポ 三件」「今日のアポ ５」などをサポート
+        match = re.search(r"(\d+|一二三四五六七八九十)件?", normalized_message)
+
+        if match:
+            appt_count = match.group(1).rstrip("件")  # 「件」が含まれていても削除して処理
+            appt_count = kanji_to_number(appt_count) if appt_count in "一二三四五六七八九十" else int(appt_count)
+
             sheet.append_row([user_id, "アポ", appt_count])
             reply = f"{appt_count}件のアポを記録しました！"
-        except ValueError:
-            reply = "入力形式が正しくありません。例: 今日のアポ数 5"
+        else:
+            raise ValueError  # マッチしない場合はエラー
+
+    except ValueError:
+        reply = "入力形式が正しくありません。例: 今日のアポ数 5"
+
+# 漢数字を整数に変換する関数
+def kanji_to_number(kanji):
+    kanji_map = {"一":1, "二":2, "三":3, "四":4, "五":5, "六":6, "七":7, "八":8, "九":9, "十":10}
+    return sum(kanji_map[k] for k in kanji if k in kanji_map)
+
+# 全角数字を半角数字に変換する関数
+def zen_to_han(text):
+    return text.translate(str.maketrans("０１２３４５６７８９", "0123456789"))
 
     elif "成果" in user_message:
         reply = "今週の成果を振り返りましょう！"
