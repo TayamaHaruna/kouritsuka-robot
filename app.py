@@ -60,49 +60,41 @@ sheet = client.open_by_key(spreadsheet_id).sheet1
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    import re  # 正規表現を使う（この行を追加）
-    
-    user_message = event.message.text.lower()
-    print(f"📩 受信メッセージ: {user_message}")  # デバッグ用
+    user_message = event.message.text.lower()  # 👈 まず user_message を定義する
+    print(f"📩 受信メッセージ: {user_message}")  # それからログ出力
+
     user_id = event.source.user_id
     print(f"👤 ユーザーID: {user_id}")  # デバッグ用
 
-# ユーザーが送信したメッセージをそのまま記録する
-print(f"📩 受信メッセージ: {user_message}")  # デバッグ用
-user_id = event.source.user_id
-print(f"👤 ユーザーID: {user_id}")  # デバッグ用
+    try:
+        print("✅ スプレッドシートに記録します！")  # 確認ログ
+        sheet.append_row([user_id, user_message])  # そのまま記録
+        reply = f"📋 記録しました: {user_message}"
 
-try:
-    print("✅ スプレッドシートに記録します！")  # 確認ログ
-    sheet.append_row([user_id, user_message])  # そのまま記録
-    reply = f"📄 記録しました: {user_message}"
+    except Exception as e:
+        print(f"❌ 記録エラー: {str(e)}")  # エラー詳細を出力
+        reply = "⚠ スプレッドシートへの記録に失敗しました"
 
-except Exception as e:
-    print(f"❌ 記録エラー: {str(e)}")  # エラー詳細を出力
-    reply = "⚠ スプレッドシートへの記録に失敗しました"
+    else:  # 👈 `else` を適切に追加
+        if "記録一覧" in user_message:
+            try:
+                print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用
+                records = sheet.get_all_values()  # スプレッドシートからデータ取得
+                print(f"📄 取得データ（最初の5件）: {records[:5]}")  # 確認用ログ
 
-else:  # 👈 ここを追加してエラーを防ぐ
-    if "記録一覧" in user_message:
-        try:
-            print("📌 スプレッドシートのデータ取得を開始します")  # デバッグ用
-            records = sheet.get_all_values()  # スプレッドシートからデータ取得
-            print(f"📄 取得データ（最初の5件）: {records[:5]}")  # 確認用ログ
+            except Exception as e:
+                print(f"❌ スプレッドシート取得エラー: {str(e)}")  # エラー詳細を出力
+                records = []  # エラー時は空リストを代入
 
-        except Exception as e:
-            print(f"❌ スプレッドシート取得エラー: {str(e)}")  # エラー詳細を出力
-            records = []  # エラー時は空リストを代入
-
-        if records:
-            print("✅ データが取得できました")  # 確認ログ
-            record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
-            reply = f"📄 最新の記録:\n{record_text}"
-        else:
-            print("⚠ 取得データなし")  # 確認ログ
-            reply = "📋 まだ記録がありません。行動を記録しましょう！"
-
-    else:
-        reply = "⚠ メッセージの内容が認識されませんでした"
+            if records:
+                print("✅ データが取得できました")  # 確認ログ
+                record_text = "\n".join([" | ".join(row) for row in records[-5:]])  # 直近5件のデータ
+                reply = f"📄 最新の記録:\n{record_text}"
+            else:
+                print("⚠ 取得データなし")  # 確認ログ
+                reply = "📋 まだ記録がありません。行動を記録しましょう！"
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
+
 
 
